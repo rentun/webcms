@@ -1,11 +1,12 @@
 <?php
+
    function connectToDB($dbServer, $userName, $password){
-        try $db = new mysqli($dbServer, $userName, $password, 'images');
-        catch(exception $e)
-        {
-            echo 'Database Error: ',  $e->getMessage(), "\n";
-            return;
-        }
+        $db = new mysqli($dbServer, $userName, $password, 'images');
+        //catch(exception $e)
+        //{
+        //    echo 'Database Error: ',  $e->getMessage(), "\n";
+        //    return;
+        //}
         return $db;
     }
     function checkForNewImages($imagePath){
@@ -21,7 +22,7 @@
     		$fullFname = $prodImageDir.$fname;
     		rename($unhandledImageDir.$fname, $fullFname);
     		$db->mysqli_query("INSERT INTO imageData SET fname VALUE $fullFname");
-            createThumbs($fullFname, $thumbHeight, $db)
+            createThumbs($fullFname, $thumbHeight, $db);
     	}
     }
         
@@ -36,13 +37,17 @@
     }
 
     function createThumbs( $fullFname, $pathToThumbs, $thumbHeight, $db) {
+
         $fname = basename($fullFname);
-        $query = "SELECT $id FROM imageData WHERE 'fname' = $fname";
-        $db->mysqli_query($query);
-        $numrows = mysqli_stmt_num_rows($queryOutPut)
+        $preppedQuery = "SELECT 'id' FROM imageData WHERE 'fname' = $fname";
+        if ($queryOutPut = $db->query($preppedQuery)){
+
+        $numrows = $queryOutPut->num_rows;
 		//open the dir
 		$dir = opendir( $pathToImages);
 		//loop through directory looking for JPGs
+    }   
+    else {echo "database error";}
 
 
 		while (false !== ($fname = readdir( $dir ))) {
@@ -84,6 +89,7 @@
 
                 }
 		}
+    }
 	function makeLinks($pathToImage, $pathToThumb){
         echo "<img src=\"thumbs/$thumbName\" onclick=\"TINY.box.show({image:'imgs/$entry', animate:true, boxid:'frameless'})\" alt=$entry-thumbnail/>";
       

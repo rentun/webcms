@@ -9,18 +9,22 @@
     <script type="text/javascript" src="/tinybox.js"></script>
 </head>
 <body>
-    
-    <?php
+
+<?php
+    echo $_SERVER['SERVER_SOFTWARE'];
     include '../lib/util.php';
     $server = 'localhost';
+
     $uName = 'webCMS';
     $pword = 'shoopadoop';
     ini_set('display_errors',1); 
     error_reporting(E_ALL);
-    $imgDir = '/var/www/html/images/imgs/';
-    $thumbDir = '/var/www/html/images/thumbs/';
-    createThumbs($imgDir, $thumbDir, 250);
+    $imgDir = 'images/imgs/';
+    $thumbDir = 'images/thumbs/';
+    $db = connectToDB($server, $uName, $pword);
+    createThumbs($imgDir, $thumbDir, 250, $db);
     makeLinks($imgDir);
-	?>
+	?> 
+
 </body>
 </html>
