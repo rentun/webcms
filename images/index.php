@@ -11,24 +11,23 @@
 <body>
 
 <?php
-    echo $_SERVER['SERVER_SOFTWARE'];
+
     include '../lib/util.php';
     $server = 'localhost';
     $newImagePath = 'newImgs/';
     $imagePath = 'imgs/';
-    $thumbPath = 'thumbs/';
+    $thumbPath = '/images/thumbs/';
     $uName = 'webCMS';
     $pword = 'shoopadoop';
     $thumbHeight = 250;
 
 
-
     
     $db = connectToDB($server, $uName, $pword);
 
-    if (checkForNewImages($newImageDir))
+    if (checkForNewImages($newImagePath))
     {
-        handleNewImages($newImageDir, $imageDir, $thumbDir, $thumbHeight, $db);
+        handleNewImages($newImagePath, $imagePath, $thumbPath, $thumbHeight, $db);
     }
     ini_set('display_errors',1); 
     error_reporting(E_ALL);
