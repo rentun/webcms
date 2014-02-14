@@ -9,21 +9,28 @@
         //}
         return $db;
     }
-    function checkForNewImages($imagePath){
-    	if (false == ($fname = readdir( $imagePath ))){
+    function checkForNewImages($newImagePath){
+        $dir = opendir($newImagePath);
+    	if (false == ($fname = readdir( $dir ))){
     		return 0;
     	}
     	else{
     		return 1;
     	}
+        closeDir($dir);
     }
-    function handleNewImages($unhandledImageDir, $prodImageDir, $thumbHeight, $db){
-    	while (false !== ($fname = readdir( $unhandledImagePath ))) {
+    function handleNewImages($newImagePath, $imagePath, $thumbPath, $thumbHeight, $db){
+
+         $imageDir = opendir($imagePath);
+         $newImageDir = opendir($newImagePath);
+    	while (false !== ($fname = readdir( $unhandledImageDir ))) {
     		$fullFname = $prodImageDir.$fname;
     		rename($unhandledImageDir.$fname, $fullFname);
     		$db->mysqli_query("INSERT INTO imageData SET fname VALUE $fullFname");
-            createThumbs($fullFname, $thumbHeight, $db);
+            createThumbs($fullFname, $thumbPath, $thumbHeight, $db);
     	}
+        closedir($imageDir);
+        closedir($newImageDir);
     }
         
     function getPathsFromDB($db){
@@ -31,14 +38,15 @@
          FROM imageData 
          INNER JOIN thumbData 
          ON imageData.thumb=thumbData.id";
-        $result = $db->mysqli_query($query);
-        $row = mysqli_fetch_array($result);
+        $result = $db->query($query);
+        $row = $result->fetch_array();
         return $row;
     }
 
     function createThumbs( $fullFname, $pathToThumbs, $thumbHeight, $db) {
 
         $fname = basename($fullFname);
+        $pathToImages = dirname($fullFname);
         $preppedQuery = "SELECT 'id' FROM imageData WHERE 'fname' = $fname";
         if ($queryOutPut = $db->query($preppedQuery)){
 
@@ -89,8 +97,10 @@
 
                 }
 		}
+        closedir($dir);
     }
-	function makeLinks($pathToImage, $pathToThumb){
+	function makeLinks($db){
+
         echo "<img src=\"thumbs/$thumbName\" onclick=\"TINY.box.show({image:'imgs/$entry', animate:true, boxid:'frameless'})\" alt=$entry-thumbnail/>";
       
    }

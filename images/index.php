@@ -14,16 +14,26 @@
     echo $_SERVER['SERVER_SOFTWARE'];
     include '../lib/util.php';
     $server = 'localhost';
-
+    $newImagePath = 'newImgs/';
+    $imagePath = 'imgs/';
+    $thumbPath = 'thumbs/';
     $uName = 'webCMS';
     $pword = 'shoopadoop';
+    $thumbHeight = 250;
+
+
+
+    
+    $db = connectToDB($server, $uName, $pword);
+
+    if (checkForNewImages($newImageDir))
+    {
+        handleNewImages($newImageDir, $imageDir, $thumbDir, $thumbHeight, $db);
+    }
     ini_set('display_errors',1); 
     error_reporting(E_ALL);
-    $imgDir = 'images/imgs/';
-    $thumbDir = 'images/thumbs/';
-    $db = connectToDB($server, $uName, $pword);
-    createThumbs($imgDir, $thumbDir, 250, $db);
-    makeLinks($imgDir);
+    echo getPathsFromDB($db)[0];
+  //  makeLinks($db);
 	?> 
 
 </body>
