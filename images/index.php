@@ -9,31 +9,27 @@
     <script type="text/javascript" src="/tinybox.js"></script>
 </head>
 <body>
-
 <?php
 
     include '../lib/util.php';
     $server = 'localhost';
     $newImagePath = 'newImgs/';
     $imagePath = 'imgs/';
-    $thumbPath = '/images/thumbs/';
+    $thumbPath = 'thumbs/';
     $uName = 'webCMS';
     $pword = 'shoopadoop';
     $thumbHeight = 250;
-
-
-    
-    $db = connectToDB($server, $uName, $pword);
-
+    if (!($db = connectToDB($server, $uName, $pword))){
+        echo "Database error at line ", __LINE__;
+    }
     if (checkForNewImages($newImagePath))
     {
         handleNewImages($newImagePath, $imagePath, $thumbPath, $thumbHeight, $db);
     }
     ini_set('display_errors',1); 
     error_reporting(E_ALL);
-    echo getPathsFromDB($db)[0];
-  //  makeLinks($db);
-	?> 
-
+    printLinks($db);
+    $db->close();
+?> 
 </body>
 </html>
