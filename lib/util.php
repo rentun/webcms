@@ -20,9 +20,9 @@
             if($fname !== "." && $fname !== ".."){
         		$fullFname = $imagePath . $fname;
         		rename($newImagePath . $fname, $fullFname);
-                $thumbPath = createThumb($fullFname, $thumbPath, $thumbHeight, $db);
+                $thumbFullFname = createThumb($fullFname, $thumbPath, $thumbHeight, $db);
                 //insert thumb path into database
-                $query = "INSERT INTO thumbdata (filePath) VALUE ('$thumbPath');";
+                $query = "INSERT INTO thumbdata (filePath) VALUE ('$thumbFullFname');";
                 if (!($db->query($query))){
                     echo "<br> DB error at line ", __LINE__, ":", $db->error, "<br>";
                 }
@@ -63,6 +63,8 @@
             $thumbFullFname = $pathToThumbs.$thumbName;
 			imagejpeg( $tmp_img, $thumbFullFname );
         }
+        echo "Thumbfullname is: $thumbFullFname <br>";
+        echo "pathToThumbs is: $pathToThumbs <br>";
         return $thumbFullFname;
     }
     function getThumbnailName($imgName)
@@ -70,8 +72,8 @@
         $ext = pathinfo($imgName, PATHINFO_EXTENSION);
         $extPos = strpos($imgName, $ext);
         $fileNameWithoutExt = substr($imgName, 0, ($extPos - 1) );
-        echo "Filename is: ", $fileNameWithoutExt, " ";
         $thumbFilename = $fileNameWithoutExt . '-thumb.' . $ext;
+
         return $thumbFilename;
     }
     function printLinks($db){
@@ -79,17 +81,14 @@
          FROM imagedata 
          INNER JOIN thumbdata 
          ON imagedata.thumb=thumbdata.id;";
-        $i=0;
-        do{
-            if (!($result = $db->query($query))){
+        if (!($result = $db->query($query))){
             echo "<br> DB error at line ", __LINE__, ":", $db->error, "<br>";
             }
-            $row = $result->fetch_row();
+        while($row = $result->fetch_row())
+        {
             makeLinks($row);
-            $i++;
-        } while ($i < $db->affected_rows);
-        $row = $result->fetch_row();
-        return $row;
+        }
+        return;
     }
 	function makeLinks($row){
         $imagePath = $row[0];
