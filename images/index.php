@@ -13,6 +13,7 @@
         <?php
 
             include '../lib/util.php';
+            include '../conf/config.php';
             $server = 'localhost';
             $newImagePath = 'newImgs/';
             $imagePath = 'imgs/';
@@ -20,12 +21,12 @@
             $uName = 'webCMS';
             $pword = 'shoopadoop';
             $thumbHeight = 250;
-            if (!($db = connectToDB($server, $uName, $pword))){
+            if (!($db = connectToDB($config['server'], $config['uName'], $config['pword'] ))){
                 echo "Database error at line ", __LINE__;
             }
             if (checkForNewImages($newImagePath))
             {
-                handleNewImages($newImagePath, $imagePath, $thumbPath, $thumbHeight, $db);
+                handleNewImages($config['newImagePath'], $config['imagePath'], $config['thumbPath'], $config['thumbHeight'], $db);
             }
             ini_set('display_errors',1); 
             error_reporting(E_ALL);
