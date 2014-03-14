@@ -63,8 +63,6 @@
             $thumbFullFname = $pathToThumbs.$thumbName;
 			imagejpeg( $tmp_img, $thumbFullFname );
         }
-        echo "Thumbfullname is: $thumbFullFname <br>";
-        echo "pathToThumbs is: $pathToThumbs <br>";
         return $thumbFullFname;
     }
     function getThumbnailName($imgName)
